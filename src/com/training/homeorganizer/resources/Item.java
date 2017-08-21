@@ -1,28 +1,41 @@
 package com.training.homeorganizer.resources;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
-@Entity
-@SequenceGenerator(name = "item_seq", sequenceName = "item_id_seq")
+@Entity(name="items")
+//@SequenceGenerator(name = "item_seq", sequenceName = "item_id_seq")
 
 public class Item implements Serializable{
 	@Id
-	@GeneratedValue (strategy = GenerationType.SEQUENCE, generator = "item_seq")
+	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private int itemId;
 	private String itemName;
+	
+	@OneToOne
+	@JoinColumn(name="StorageSpaceId")
 	private StorageSpace storageSpace;
+	
 	private Date lastMove;
-	//@OneToMany (mappedBy = "item")
-	private List<Person> person;
+	
+	@ManyToMany
+	@JoinTable(name="ownership", joinColumns=@JoinColumn(name="ItemId"),
+				inverseJoinColumns=@JoinColumn(name="PersonId")
+			)
+	private List<Person> person = new ArrayList<Person>();
 	
 	public Item(){
 		
